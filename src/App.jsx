@@ -5,6 +5,7 @@ import "./app.scss";
 
 function App() {
   const [arrItem, setArrItem] = useState(["A", "B", "C"]);
+  const [inputVal, setInputVal] = useState("");
   const handleRemove = () => {
     console.log(1);
     setArrItem((arr) => {
@@ -32,7 +33,7 @@ function App() {
   };
 
   const handleUpdateAllLetters = () => {
-    setArrItem(["A", "B", "C", "D", "E", "F", "G", "H"]);
+    setArrItem((arr) => arr.map((cur) => (cur === "A" ? "H" : cur)));
   };
 
   const handleUpdateNewLetter = () => {
@@ -41,7 +42,13 @@ function App() {
       return [x, ...arr];
     });
   };
-  const handleChange = () => {};
+
+  const handleIputToState = () => {
+    setArrItem((curArr) => [...curArr, inputVal]);
+  };
+  const handleChange = (e) => {
+    setInputVal(e.target.value);
+  };
 
   console.log(arrItem);
   return (
@@ -53,9 +60,12 @@ function App() {
       <Button onClick={handleClear}>Clear</Button>
       <Button onClick={handleReset}>Reset</Button>
       <Button onClick={handleUpdateAllLetters}>Update A to H</Button>
+      <Button onClick={handleIputToState}>Connect input</Button>
+
       <Button onClick={handleUpdateNewLetter}>Add New Letter</Button>
 
-      <input type="text" value={arrItem} onChange={handleChange} />
+      <input type="text" value={inputVal} onChange={handleChange} />
+      {arrItem.join(", ")}
     </div>
   );
 }
