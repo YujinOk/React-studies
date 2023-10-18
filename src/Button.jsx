@@ -1,9 +1,9 @@
-function Button({ children, onClick }) {
+const Button = ({ name, onClick }) => {
   return (
     <div>
-      <button onClick={onClick}>{children}</button>
+      <button onClick={onClick}>{name}</button>
     </div>
   );
-}
+};
 
 export default Button;

@@ -1,78 +1,79 @@
-import React, { useState } from "react";
-import TodoList from "./TodoList";
+import { useState } from "react";
 import Button from "./Button";
-import "./app.scss";
 
-function App() {
-  const [arrItem, setArrItem] = useState(["A", "B", "C"]);
+const INITIAL_VALUE = ["A", "B", "C"];
+const App = () => {
+  const [arrList, setArrList] = useState(INITIAL_VALUE);
   const [inputVal, setInputVal] = useState("");
-  const handleRemove = () => {
-    console.log(1);
-    setArrItem((arr) => {
-      return [...arr.slice(1)];
-    });
+  const removeTheFirstLetter = () => {
+    setArrList((cur) => cur.slice(1));
   };
 
-  const handleRemoveLetterB = () => {
-    setArrItem((arr) => arr.filter((cur) => cur !== "B"));
+  const removeSpecificLetter = (letter) => {
+    setArrList((cur) => cur.filter((el) => el !== letter));
   };
 
-  const handleAddToStart = () => {
-    setArrItem((arr) => ["K", ...arr]);
+  const addToTheStart = (letter) => {
+    setArrList((cur) => [letter, ...cur]);
   };
 
-  const handleAddToEnd = () => {
-    setArrItem((arr) => [...arr, "Y"]);
+  const addToTheEnd = (letter) => {
+    setArrList((cur) => [...cur, letter]);
   };
 
   const handleClear = () => {
-    setArrItem([]);
+    setArrList([]);
   };
+
   const handleReset = () => {
-    setArrItem(["A", "B", "C"]);
+    setArrList(INITIAL_VALUE);
   };
 
-  const handleUpdateAllLetters = () => {
-    setArrItem((arr) => arr.map((cur) => (cur === "A" ? "H" : cur)));
+  const handleUpdateAtoH = () => {
+    setArrList((cur) => cur.map((el) => (el === "A" ? "H" : el)));
   };
 
-  const handleUpdateNewLetter = () => {
-    setArrItem((arr) => {
-      const x = arr.push("kk");
-      return [x, ...arr];
-    });
-  };
-
-  const handleIputToState = () => {
-    setArrItem((curArr) => [...curArr, inputVal]);
-  };
   const handleChange = (e) => {
     setInputVal(e.target.value);
   };
 
-  console.log(arrItem);
-  return (
-    <div className="btn-container">
-      <Button onClick={handleRemove}>Remove First Element</Button>
-      <Button onClick={handleRemoveLetterB}>Remove All B's</Button>
-      <Button onClick={handleAddToStart}>Add to Start</Button>
-      <Button onClick={handleAddToEnd}>Add to End</Button>
-      <Button onClick={handleClear}>Clear</Button>
-      <Button onClick={handleReset}>Reset</Button>
-      <Button onClick={handleUpdateAllLetters}>Update A to H</Button>
-      <Button onClick={handleIputToState}>Connect input</Button>
+  const addInputToTheStart = () => {
+    setArrList((cur) => [inputVal, ...cur]);
+  };
 
-      <Button onClick={handleUpdateNewLetter}>Add New Letter</Button>
+  const addAtAnyIndex = (el, index) => {
+    setArrList((cur) => [...cur.slice(0, index), el, ...cur.slice(index)]);
+    // numbers.splice(2, 0, 3);
+  };
+  return (
+    <div>
+      <Button name="Remove the first letter" onClick={removeTheFirstLetter} />
+      <Button
+        name="Remove specific letter"
+        onClick={() => removeSpecificLetter("A")}
+      />
+      <Button
+        name="Add a new element to the start"
+        onClick={() => addToTheStart("K")}
+      />
+      <Button
+        name="Add a new element to the end"
+        onClick={() => addToTheEnd("Q")}
+      />
+
+      <Button name="Clear" onClick={handleClear} />
+      <Button name="Reset" onClick={handleReset} />
+      <Button name="Update A to H" onClick={handleUpdateAtoH} />
+      <Button name="Add to the first" onClick={addInputToTheStart} />
+      <Button
+        name="add a new element at any index"
+        onClick={() => addAtAnyIndex(inputVal, 2)}
+      />
 
       <input type="text" value={inputVal} onChange={handleChange} />
-      {arrItem.join(", ")}
+      {arrList.join(", ")}
     </div>
   );
-}
+};
 
 export default App;
-
-// TodoListItem component
-// Props: children=name, isComplete:boolean
-// Checkbox (checked if complete)
-// Label (children value)
