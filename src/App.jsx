@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./app.scss";
+import Child from "./Child";
 const App = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const handleAdd = () => {
     setAge((cur) => cur + 1);
   };
+
+  const person = { name };
+
+  useEffect(() => {
+    console.log(person);
+  }, [person]);
 
   const handleSubtract = () => {
     if (age <= 0) {
@@ -16,17 +23,7 @@ const App = () => {
   };
   return (
     <div className="container">
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <div className="btn-container">
-        <button onClick={handleAdd}>+</button>
-        {age}
-        <button onClick={handleSubtract}>-</button>
-      </div>
-      My name is {name} and I am {age} years old.
+      <Child />
     </div>
   );
 };
