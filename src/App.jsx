@@ -2,28 +2,54 @@ import { useState, useEffect } from "react";
 import "./app.scss";
 import Child from "./Child";
 const App = () => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
-  const handleAdd = () => {
-    setAge((cur) => cur + 1);
-  };
-
-  const person = { name };
+  const [users, setUsers] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
+  // https://jsonplaceholder.typicode.com/users
 
   useEffect(() => {
-    console.log(person);
-  }, [person]);
+    setLoading(true);
+    setError(undefined);
+    const controller = new AbortController();
 
-  const handleSubtract = () => {
-    if (age <= 0) {
-      alert("cannot go lower than 0");
-    } else {
-      setAge((cur) => cur - 1);
-    }
-  };
+    fetch("https://jsonplaceholder.typicode.com/users", {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return Promise.reject(res);
+        }
+      })
+      .then((data) => {
+        console.log("HERE");
+        setUsers(data);
+      })
+      .catch((e) => {
+        if (e?.name === "AbortError") return;
+        setError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <div className="container">
-      <Child />
+      <h1>Users</h1>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : error ? (
+        <h2>Error!</h2>
+      ) : (
+        <pre>{JSON.stringify(users, null, 2)}</pre>
+        // <p>{JSON.stringify(users)}</p>
+      )}
     </div>
   );
 };
