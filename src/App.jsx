@@ -11,7 +11,7 @@ const App = () => {
 
   const handleAddClick = () => {
     if (toDo.length > 0) {
-      setTodos((toDos) => [...toDos, toDo]);
+      setTodos((toDos) => [...toDos, { name: toDo, completed: false }]);
       setTodo("");
     }
   };
@@ -24,6 +24,14 @@ const App = () => {
 
     setTodos(notDeletedToDos);
   };
+
+  const handleToggleChange = (index) => {
+    const completedItem = toTos.map((cur, curIndex) =>
+      curIndex === index ? { ...cur, completed: true } : cur
+    );
+
+    setTodos(completedItem);
+  };
   console.log(toTos);
   return (
     <>
@@ -32,8 +40,12 @@ const App = () => {
           {toTos.map((cur, index) => (
             <li className="list-item" key={index}>
               <label className="list-item-label">
-                <input type="checkbox" data-list-item-checkbox />
-                <span data-list-item-text>{cur}</span>
+                <input
+                  type="checkbox"
+                  data-list-item-checkbox
+                  onChange={() => handleToggleChange(index)}
+                />
+                <span data-list-item-text>{cur.name}</span>
               </label>
               <button
                 data-button-delete
