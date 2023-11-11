@@ -17,8 +17,7 @@ const App = () => {
   };
 
   const handleDeleteClick = (index) => {
-    console.log(index);
-    const notDeletedToDos = toTos.filter((cur, curIndex) => {
+    const notDeletedToDos = toTos.filter((_, curIndex) => {
       return index !== curIndex;
     });
 
@@ -27,12 +26,12 @@ const App = () => {
 
   const handleToggleChange = (index) => {
     const completedItem = toTos.map((cur, curIndex) =>
-      curIndex === index ? { ...cur, completed: true } : cur
+      curIndex === index ? { ...cur, completed: !cur.completed } : cur
     );
 
     setTodos(completedItem);
   };
-  console.log(toTos);
+
   return (
     <>
       {toTos.length > 0 && (
