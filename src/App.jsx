@@ -3,34 +3,57 @@ import "./app.scss";
 
 const App = () => {
   const [toDo, setTodo] = useState("");
+  const [toTos, setTodos] = useState([]);
+
   const handleChange = (e) => {
     setTodo(e.target.value);
   };
-  console.log(toDo);
+
+  const handleAddClick = () => {
+    if (toDo.length > 0) {
+      setTodos((toDos) => [...toDos, toDo]);
+      setTodo("");
+    }
+  };
+
+  const handleDeleteClick = (index) => {
+    console.log(index);
+    const notDeletedToDos = toTos.filter((cur, curIndex) => {
+      return index !== curIndex;
+    });
+
+    setTodos(notDeletedToDos);
+  };
+  console.log(toTos);
   return (
     <>
-      {toDo && (
+      {toTos.length > 0 && (
         <ul id="list">
-          <li class="list-item">
-            <label class="list-item-label">
-              <input type="checkbox" data-list-item-checkbox />
-              <span data-list-item-text>Item 1</span>
-            </label>
-            <button data-button-delete>Delete</button>
-          </li>
-          <li class="list-item">
-            <label class="list-item-label">
-              <input type="checkbox" checked data-list-item-checkbox />
-              <span data-list-item-text>Item 2</span>
-            </label>
-            <button data-button-delete>Delete</button>
-          </li>
+          {toTos.map((cur, index) => (
+            <li className="list-item" key={index}>
+              <label className="list-item-label">
+                <input type="checkbox" data-list-item-checkbox />
+                <span data-list-item-text>{cur}</span>
+              </label>
+              <button
+                data-button-delete
+                onClick={() => handleDeleteClick(index)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
         </ul>
       )}
       <div id="new-todo-form">
         <label htmlFor="todo-input">New Todo</label>
-        <input type="text" id="todo-input" onChange={handleChange} />
-        <button>Add Todo</button>
+        <input
+          type="text"
+          id="todo-input"
+          onChange={handleChange}
+          value={toDo}
+        />
+        <button onClick={handleAddClick}>Add Todo</button>
       </div>
     </>
   );
