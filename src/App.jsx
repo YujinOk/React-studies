@@ -1,72 +1,58 @@
 import React, { useEffect, useState } from "react";
 import "./app.scss";
+import TodoItem from "./TodoItem";
 
 const App = () => {
-  const [toDo, setTodo] = useState("");
-  const [toTos, setTodos] = useState([]);
-
+  const [toDoInput, setToDoInput] = useState("");
+  const [toDos, setToDos] = useState([]);
   const handleChange = (e) => {
-    setTodo(e.target.value);
+    setToDoInput(e.target.value);
   };
 
   const handleAddClick = () => {
-    if (toDo.length > 0) {
-      setTodos((toDos) => [...toDos, { name: toDo, completed: false }]);
-      setTodo("");
+    if (toDoInput.trim() !== "") {
+      setToDos([...toDos, { task: toDoInput, completed: false }]);
+      setToDoInput("");
     }
+  };
+  const handleCheckbox = (index) => {
+    const updatedToDo = toDos.map((cur, i) =>
+      i === index ? { ...cur, completed: !cur.completed } : cur
+    );
+    setToDos(updatedToDo);
   };
 
   const handleDeleteClick = (index) => {
-    const notDeletedToDos = toTos.filter((_, curIndex) => {
-      return index !== curIndex;
-    });
-
-    setTodos(notDeletedToDos);
-  };
-
-  const handleToggleChange = (index) => {
-    const completedItem = toTos.map((cur, curIndex) =>
-      curIndex === index ? { ...cur, completed: !cur.completed } : cur
-    );
-
-    setTodos(completedItem);
+    const notDeletedToDo = toDos.filter((cur, i) => i !== index);
+    setToDos(notDeletedToDo);
   };
 
   return (
-    <>
-      {toTos.length > 0 && (
-        <ul id="list">
-          {toTos.map((cur, index) => (
-            <li className="list-item" key={index}>
-              <label className="list-item-label">
-                <input
-                  type="checkbox"
-                  data-list-item-checkbox
-                  onChange={() => handleToggleChange(index)}
-                />
-                <span data-list-item-text>{cur.name}</span>
-              </label>
-              <button
-                data-button-delete
-                onClick={() => handleDeleteClick(index)}
-              >
-                Delete
-              </button>
-            </li>
+    <div>
+      <ul id="list">
+        {toDos.length > 0 &&
+          toDos.map((cur, index) => (
+            <TodoItem
+              key={index}
+              task={cur.task}
+              completed={cur?.completed}
+              toggleToDo={handleCheckbox}
+              index={index}
+              handleDeleteClick={handleDeleteClick}
+            />
           ))}
-        </ul>
-      )}
+      </ul>
       <div id="new-todo-form">
         <label htmlFor="todo-input">New Todo</label>
         <input
           type="text"
           id="todo-input"
           onChange={handleChange}
-          value={toDo}
+          value={toDoInput}
         />
         <button onClick={handleAddClick}>Add Todo</button>
       </div>
-    </>
+    </div>
   );
 };
 
