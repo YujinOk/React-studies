@@ -1,58 +1,69 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./app.scss";
-import TodoItem from "./TodoItem";
 
 const App = () => {
-  const [toDoInput, setToDoInput] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const handleChange = (e) => {
-    setToDoInput(e.target.value);
-  };
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
+  const inputRef = useRef();
+  const btnRef = useRef();
 
-  const handleAddClick = () => {
-    if (toDoInput.trim() !== "") {
-      setToDos([...toDos, { task: toDoInput, completed: false }]);
-      setToDoInput("");
+  useEffect(() => {
+    if (inputRef.current && btnRef.current) {
+      inputRef.current.focus();
+    } else {
+      alert("add task1");
+    }
+
+    const handleClickOutside = (event) => {
+      // when component mounts, these ref couldnt exist so early err handling
+      if (!inputRef.current || !btnRef.current) return;
+      // equiv. to these three conditions
+      if (
+        (!inputRef.current && btnRef.current) ||
+        (inputRef.current && !btnRef.current) ||
+        (!inputRef.current && !btnRef.current)
+      )
+        if (
+          !inputRef.current.contains(event.target) &&
+          !btnRef.current.contains(event.target)
+        ) {
+          // if event.taget property arent the same as my input OR btn
+          alert("add task2");
+        }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const handleAddTask = () => {
+    if (todo.trim() !== "") {
+      setTodos((prev) => [...prev, { task: todo, completed: false }]);
+      setTodo("");
     }
   };
-  const handleCheckbox = (index) => {
-    const updatedToDo = toDos.map((cur, i) =>
-      i === index ? { ...cur, completed: !cur.completed } : cur
-    );
-    setToDos(updatedToDo);
-  };
-
-  const handleDeleteClick = (index) => {
-    const notDeletedToDo = toDos.filter((cur, i) => i !== index);
-    setToDos(notDeletedToDo);
-  };
-
   return (
-    <div>
-      <ul id="list">
-        {toDos.length > 0 &&
-          toDos.map((cur, index) => (
-            <TodoItem
-              key={index}
-              task={cur.task}
-              completed={cur?.completed}
-              toggleToDo={handleCheckbox}
-              index={index}
-              handleDeleteClick={handleDeleteClick}
-            />
-          ))}
+    <>
+      <ul>
+        {todos.length > 0 &&
+          todos.map((cur, index) => <li key={index}>{cur.task}</li>)}
       </ul>
-      <div id="new-todo-form">
-        <label htmlFor="todo-input">New Todo</label>
+      <label htmlFor="name">
         <input
           type="text"
-          id="todo-input"
-          onChange={handleChange}
-          value={toDoInput}
+          ref={inputRef}
+          value={todo}
+          onChange={(e) => setTodo(e.target.value)}
         />
-        <button onClick={handleAddClick}>Add Todo</button>
-      </div>
-    </div>
+
+        <button ref={btnRef} onClick={handleAddTask}>
+          Add task
+        </button>
+      </label>
+    </>
   );
 };
 
