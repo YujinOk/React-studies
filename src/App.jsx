@@ -10,8 +10,10 @@ import "./app.scss";
 const App = () => {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
+  const [isDarkMode, toggleDarkMode] = useToggle(false);
   const inputRef = useRef();
   const btnRef = useRef();
+  const btn2Ref = useRef();
 
   const handleClickOutside = useCallback(
     (event) => {
@@ -20,7 +22,8 @@ const App = () => {
 
       if (
         !inputRef.current.contains(event.target) &&
-        !btnRef.current.contains(event.target)
+        !btnRef.current.contains(event.target) &&
+        !btn2Ref.current.contains(event.target)
       ) {
         // if event.taget property arent the same as my input OR btn
         alert("add task2");
@@ -58,7 +61,13 @@ const App = () => {
   }, [todos]);
   console.log(todos);
   return (
-    <>
+    <div
+      style={{
+        background: isDarkMode ? "#333" : "white",
+        color: isDarkMode ? "white" : "#333",
+        minHeight: "100vh",
+      }}
+    >
       {renderedTodos}
       <label htmlFor="name">
         <input
@@ -72,8 +81,21 @@ const App = () => {
           Add task
         </button>
       </label>
-    </>
+
+      <button ref={btn2Ref} onClick={toggleDarkMode}>
+        Toggle Dark Mode
+      </button>
+    </div>
   );
 };
 
+function useToggle(initialValue) {
+  const [value, setValue] = useState(initialValue);
+
+  function toggle() {
+    setValue((currentVal) => !currentVal);
+  }
+
+  return [value, toggle];
+}
 export default App;
