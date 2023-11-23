@@ -1,102 +1,36 @@
-import { useState } from "react";
-import { useFetch } from "./useFetch";
-import "./app.scss";
+import { useArray } from "./useArray";
 
-// If the API does not work use these local URLs
-// const URLS = {
-//   USERS: "users.json",
-//   POSTS: "posts.json",
-//   COMMENTS: "comments.json",
-// }
-
-const URLS = {
-  USERS: "https://jsonplaceholder.typicode.com/users",
-  POSTS: "https://jsonplaceholder.typicode.com/posts",
-  COMMENTS: "https://jsonplaceholder.typicode.com/comments",
-};
-
-// BONUS:
-const OPTIONS = {
-  method: "POST",
-  body: JSON.stringify({ name: "Kyle" }),
-  headers: {
-    "Content-type": "application/json",
-  },
-};
+const INITIAL_ARRAY = [1, 2, 3];
+// const INITIAL_ARRAY = () => [1, 2, 3]
 
 function App() {
-  const [url, setUrl] = useState(URLS.USERS);
-  // console.log(url);
-
-  // const { data, isLoading, isError } = useFetch(url);
-  // BONUS:
-  const { data, isLoading, isError } = useFetch(url, OPTIONS);
-
+  const { array, set, push, replace, filter, remove, clear, reset } =
+    useArray(INITIAL_ARRAY);
+  console.log(array);
   return (
     <>
-      <div>
-        <label>
-          <input
-            type="radio"
-            checked={url === URLS.USERS}
-            onChange={() => setUrl(URLS.USERS)}
-          />
-          Users
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={url === URLS.POSTS}
-            onChange={() => setUrl(URLS.POSTS)}
-          />
-          Posts
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={url === URLS.COMMENTS}
-            onChange={() => setUrl(URLS.COMMENTS)}
-          />
-          Comments
-        </label>
+      <div>{array.join(", ")}</div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: ".5rem",
+          alignItems: "flex-start",
+          marginTop: "1rem",
+        }}
+      >
+        <button onClick={() => set([4, 5, 6])}>Set to [4, 5, 6]</button>
+        <button onClick={() => push(4)}>Push 4</button>
+        <button onClick={() => replace(1, 9)}>
+          Replace the second element with 9
+        </button>
+        <button onClick={() => filter((n) => n < 3)}>
+          Keep numbers less than 3
+        </button>
+        <button onClick={() => remove(1)}>Remove second element</button>
+        <button onClick={clear}>Clear</button>
+        <button onClick={reset}>Reset</button>
       </div>
-      {isLoading ? (
-        <h1>Loading...</h1>
-      ) : isError ? (
-        <h1>Error</h1>
-      ) : (
-        // <pre>{JSON.stringify(data, null, 2)}</pre>
-        // <div>
-        //   {data?.map((user) => (
-        //     <div key={user.id}>
-        //       <h2>{user.name}</h2>
-        //       <p>Email: {user.email}</p>
-        //     </div>
-        //   ))}
-        // </div>
-        <div className="table-container">
-          {data && data.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th colSpan={1}>ID</th>
-                  <th colSpan={3}>Body || Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.map((cur, index) => (
-                  <tr key={index}>
-                    <td>{cur.id ?? ""}</td>
-                    <td>{cur?.body ?? cur.email}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No data found</p>
-          )}
-        </div>
-      )}
     </>
   );
 }
